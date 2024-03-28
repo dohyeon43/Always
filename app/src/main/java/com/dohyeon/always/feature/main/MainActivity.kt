@@ -16,11 +16,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.dohyeon.always.ui.theme.AlwaysTheme
 
 class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
+    private var navController : NavHostController? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -54,13 +59,17 @@ class MainActivity : ComponentActivity() {
             }
         }
         setContent {
+            navController = rememberNavController()
+            navController!!.setLifecycleOwner(this)
             AlwaysTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    NavHost(navController = navController!!, startDestination = "main"){
+                        composable("main") { MainScreen(navController = navController!!) }
+                    }
                 }
             }
         }
